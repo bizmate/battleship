@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Hit;
+use AppBundle\Exceptions\NoShotSquareException;
 use AppBundle\Form\HitType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -76,8 +77,14 @@ class DefaultController extends Controller
 
         $grid = $this->get('grid');
 
-        $result = $grid->hit($hitVal);
-        $this->addFlash('notice','Hit result : ' . $result  . ' original : ' . $hitVal);
+        try{
+            $result = $grid->hit($hitVal);
+        }
+        catch(NoShotSquareException $e){
+            $result = ' - Already hit or missed this Square PLEASE TRY OTHER SQUARES -';
+        }
+
+        $this->addFlash('notice','Hit result : ' . $result  . ' original : ' . $hitVal );
 
 
         return $this->redirectToRoute('homepage');

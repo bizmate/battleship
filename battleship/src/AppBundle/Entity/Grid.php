@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Exceptions\NoShotSquareException;
 use AppBundle\Helper\PositionConverter;
 use Doctrine\Common\Cache\FilesystemCache;
 
@@ -23,8 +24,14 @@ class Grid {
      */
     private $squares;
 
+    /**
+     * @var Battleship
+     */
     private $battleShip;
 
+    /**
+     * @var Destroyer
+     */
     private $destroyer;
 
 
@@ -94,11 +101,41 @@ class Grid {
 
     public function hit($gridPos)
     {
-        return $this->positionHelper->gridToPos($gridPos);
+        $hitPos = $this->positionHelper->gridToPos($gridPos);
+
+        $hitSquare = $this->squares[$hitPos];
+        if( $hitSquare->getStatus() == Square::NO_SHOT)
+        {
+            if(in_array($hitPos , $this->getShipsSquaresPositions()))
+            {
+                $result = Square::HIT;
+
+            }
+            else
+            {
+                $result = Square::MISS;
+            }
+            $hitSquare->setStatus($result);
+            $this->cache->save(self::SQUARES_CACHE_REF, $this->squares);
+            return $result;
+        }
+        else{
+            throw new NoShotSquareException();
+        }
+    }
+
+    /**
+     * Returns an array with all the linear squares positions
+     * @return array
+     */
+    private function getShipsSquaresPositions()
+    {
+        return array_merge($this->battleShip->getSquaresOccupied(), $this->destroyer->getSquaresOccupied());
     }
 
     /**
      * Internal function to build the grid
+     * a bit too long for my taste
      */
     private function buildGrid()
     {
