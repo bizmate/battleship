@@ -128,7 +128,7 @@ class Grid {
      * Returns an array with all the linear squares positions
      * @return array
      */
-    private function getShipsSquaresPositions()
+    public function getShipsSquaresPositions()
     {
         return array_merge($this->battleShip->getSquaresOccupied(), $this->destroyer->getSquaresOccupied());
     }

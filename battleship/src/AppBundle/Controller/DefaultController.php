@@ -55,8 +55,26 @@ class DefaultController extends Controller
          * @var \AppBundle\Entity\Grid
          */
         $grid = $this->get('grid');
-        return $this->render('AppBundle:Default:index.html.twig', array(
-            'grid' => $grid->reset(),
+        $grid->reset();
+
+        $this->addFlash('notice','Game reset ' );
+
+        return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * @Route("/show", name="show")
+     */
+    public function showAction(Request $request)
+    {
+        /**
+         * @var \AppBundle\Entity\Grid
+         */
+        $grid = $this->get('grid');
+        return $this->render('AppBundle:Default:show.html.twig', array(
+            'grid' => $grid->show(),
+            'shipsSquares' => $grid->getShipsSquaresPositions(),
+            'alphas' => range('A', 'Z'),
         ));
     }
 
@@ -85,14 +103,6 @@ class DefaultController extends Controller
         }
 
         $this->addFlash('notice','Hit result : ' . $result  . ' original : ' . $hitVal );
-
-
         return $this->redirectToRoute('homepage');
-
-
-        $grid = $this->get('grid');
-        return $this->render('AppBundle:Default:index.html.twig', array(
-            'grid' => $grid->reset(),
-        ));
     }
 }

@@ -5,45 +5,15 @@
             <div id="welcome">
                 <h1>Welcome to Battleship</h1>
             </div>
-            <div> Legend - NO_SHOT = '.', MISS = '_', HIT = 'x'</div>
+            <div> X ships positions </div>
             <div id="next">
-                {% for flashMessage in app.session.flashbag.get('notice') %}
-                    <div class="flash-notice">
-                        {{ flashMessage }}
-                    </div>
-                {% endfor %}
-                <p>
-
-                </p>
 <pre>
       1 2 3 4 5 6 7 8 9 0
-    {% for rowid, row in grid %}{{ alphas[rowid] }} {% for squareid, square in row %}{{ square.getStatus() }} {% endfor %}
+    {% for rowid, row in grid %}{{ alphas[rowid] }} {% for squareid, square in row %}{% if (squareid + 10 * (rowid)) in shipsSquares %}X{% else %}.{% endif %} {% endfor %}
 
     {% endfor %}
 </pre>
-                <form name="input" action="{{ hitAction }}" method="post">
-                    Enter coordinates (row, col), e.g. A5 <input type="input" size="5" name="hit" autofocus="">
-                    <input type="submit" value="Hit">
-                </form>
-                <hr>
 
-                {## <h3>Cheat area</h3>
-                Will replace with forms
-                form_start(form) }}
-                {{ form_errors(form) }}
-
-                {{ form_row(form.positioni) }}
-                {{ form_end(form) ##}
-
-
-
-                {## Ships dump(ships)
-
-                Battleship squares
-                {{ dump(battleshipSquares) }}
-
-                Destroyer squares
-                {{ dump(destroyerSquares) }} ##}
             </div>
 
         </div>

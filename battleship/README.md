@@ -13,5 +13,7 @@ Symfony 2.7.6 was successfully installed. Now you can:
         1. Execute the php app/console server:run command.
         2. Browse to the http://localhost:8000 URL.
 
-    * Read the documentation at http://symfony.com/doc
-
+    * To play :
+        - visit homepage to see grid and play
+        - got to /show for cheat
+        - go to /resetgrid to reset the grid/game status from start
