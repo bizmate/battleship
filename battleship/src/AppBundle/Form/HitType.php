@@ -16,7 +16,7 @@ use AppBundle\Entity\Hit;
 class HitType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('position', 'text')->add('save', 'Hit');
+        $builder->add('position', 'text')->add('save', 'button', array('label' => 'Hit!'));
     }
 
     public function configureOptions(OptionsResolver $resolver)

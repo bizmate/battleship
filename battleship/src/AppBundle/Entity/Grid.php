@@ -8,6 +8,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Helper\PositionConverter;
+use Doctrine\Common\Cache\FilesystemCache;
 
 class Grid {
 
@@ -31,9 +33,15 @@ class Grid {
      */
     private $cache;
 
-    public function __construct( $cache )
+    /**
+     * @var \AppBundle\Helper\PositionConverter
+     */
+    private $positionHelper;
+
+    public function __construct( FilesystemCache $cache , PositionConverter $positionHelper )
     {
         $this->cache = $cache;
+        $this->positionHelper = $positionHelper;
         if($this->cache->contains('gridSquares') ){
             // assume what is cached is consistent
             $this->squares = $cache->fetch(self::SQUARES_CACHE_REF);
@@ -67,15 +75,7 @@ class Grid {
         $this->setShips();
     }
 
-    private function buildGrid()
-    {
-        $squares = array();
-        for($i = 0; $i < (self::X * self::Y); $i++){
-            $squares[] = new Square();
-        }
-        $this->squares = $squares;
-        $this->cache->save(self::SQUARES_CACHE_REF, $this->squares);
-    }
+
 
     public function getShips()
     {
@@ -92,6 +92,27 @@ class Grid {
         return $this->destroyer;
     }
 
+    public function hit($gridPos)
+    {
+        return $this->positionHelper->gridToPos($gridPos);
+    }
+
+    /**
+     * Internal function to build the grid
+     */
+    private function buildGrid()
+    {
+        $squares = array();
+        for($i = 0; $i < (self::X * self::Y); $i++){
+            $squares[] = new Square();
+        }
+        $this->squares = $squares;
+        $this->cache->save(self::SQUARES_CACHE_REF, $this->squares);
+    }
+
+    /**
+     * Internal function build and set the ships
+     */
     private function setShips()
     {
         if($this->cache->contains('ships') ){

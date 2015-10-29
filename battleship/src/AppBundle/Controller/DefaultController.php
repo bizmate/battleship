@@ -24,7 +24,9 @@ class DefaultController extends Controller
         $grid = $this->get('grid');
         $ships = $grid->getShips();
 
-        /*$hit = new Hit();
+        /*
+         * Created a form but going to use a raw approach for now
+         * $hit = new Hit();
 
         $form = $this->createForm(new HitType(), $hit, array(
             'action' => $this->generateUrl('hit'),
@@ -63,25 +65,22 @@ class DefaultController extends Controller
      */
     public function hitAction(Request $request)
     {
-        //echo $request->get('hit'); die;
         $hitFormat = '/^[A-J][0-9]$/';
         $hitVal =$request->get('hit');
-        if(preg_match ( $hitFormat  , $hitVal ) == 1 )
+        // raw validation - should sit somewhere else or use FormTypes
+        if(!preg_match ( $hitFormat  , $hitVal ) == 1 )
         {
-            $this->addFlash(
-                'notice',
-                'Format matched'
-            );
-            echo 'Format matched ' . $request->get('hit');
-        }
-        else{
-            $this->addFlash(
-                'notice',
-                'Hit values are from A0 to J9 - Format NOT matched'
-            );
+            $this->addFlash('notice','Hit values are from A0 to J9 - Format NOT matched : ' . $hitVal );
+            return $this->redirectToRoute('homepage');
         }
 
-        return $this->redirectToRoute($this->generateUrl('homepage'));
+        $grid = $this->get('grid');
+
+        $result = $grid->hit($hitVal);
+        $this->addFlash('notice','Hit result : ' . $result  . ' original : ' . $hitVal);
+
+
+        return $this->redirectToRoute('homepage');
 
 
         $grid = $this->get('grid');

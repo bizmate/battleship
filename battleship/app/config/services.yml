@@ -14,4 +14,7 @@ services:
 
     grid:
         class: AppBundle\Entity\Grid
-        arguments: ["@file_cache"]
+        arguments: ["@file_cache", "@positionConverter"]
+
+    positionConverter:
+        class: AppBundle\Helper\PositionConverter

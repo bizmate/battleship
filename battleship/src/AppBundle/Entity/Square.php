@@ -59,6 +59,6 @@ class Square {
         {
             return $this->status = $status;
         }
-        return false; //maybe an exception
+        return false; //maybe throw an exception
     }
 }
