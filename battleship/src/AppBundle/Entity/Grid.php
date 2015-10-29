@@ -8,7 +8,6 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Square;
 
 class Grid {
 
@@ -21,6 +20,11 @@ class Grid {
      * @var Square[]
      */
     private $squares;
+
+    private $battleShip;
+
+    private $destroyer;
+
 
     /**
      * @var \Doctrine\Common\Cache\FilesystemCache
@@ -37,6 +41,8 @@ class Grid {
         else{
             $this->buildGrid();
         }
+
+        $this->setShips();
     }
 
     /**
@@ -56,6 +62,9 @@ class Grid {
             $this->cache->delete('gridSquares');
         }
         $this->buildGrid();
+
+        $this->cache->delete('ships');
+        $this->setShips();
     }
 
     private function buildGrid()
@@ -66,6 +75,47 @@ class Grid {
         }
         $this->squares = $squares;
         $this->cache->save(self::SQUARES_CACHE_REF, $this->squares);
+    }
+
+    public function getShips()
+    {
+        return array('battleShip'=>$this->battleShip , 'destroyer' => $this->destroyer);
+    }
+
+    public function getBattleship()
+    {
+        return $this->battleShip;
+    }
+
+    public function getDestroyer()
+    {
+        return $this->destroyer;
+    }
+
+    private function setShips()
+    {
+        if($this->cache->contains('ships') ){
+            $ships = $this->cache->fetch('ships');
+            $this->battleShip = $ships['battleShip'];
+            $this->destroyer = $ships['destroyer'];
+        }
+        else{
+            $orientation1 = rand(0,1) ;
+            $orientation2 = rand(0,1) ;
+
+            $this->battleShip = new Battleship($orientation1);
+            $destroyer = new Destroyer($orientation2);
+
+            //ships cannot be in the same square
+            while(!empty(array_intersect($this->battleShip->getSquaresOccupied(), $destroyer->getSquaresOccupied())))
+            {
+                $destroyer = new Destroyer($orientation2);
+            }
+            $this->destroyer = $destroyer;
+
+            $this->cache->save('ships', array('battleShip'=>$this->battleShip , 'destroyer' => $this->destroyer) );
+        }
+
     }
 
 }

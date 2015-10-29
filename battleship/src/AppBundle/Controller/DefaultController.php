@@ -17,8 +17,13 @@ class DefaultController extends Controller
          * @var \AppBundle\Entity\Grid
          */
         $grid = $this->get('grid');
+        $ships = $grid->getShips();
         return $this->render('AppBundle:Default:index.html.twig', array(
             'grid' => $grid->show(),
+            'ships' => $ships,
+            'battleshipSquares' => $grid->getBattleship()->getSquaresOccupied(),
+            'destroyerSquares' => $grid->getDestroyer()->getSquaresOccupied(),
+            'alphas' => range('A', 'Z')
         ));
     }
 

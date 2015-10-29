@@ -1,14 +1,10 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
     <div id="wrapper">
         <div id="container">
             <div id="welcome">
                 <h1><span>Welcome to</span> Battleship</h1>
             </div>
-
-
-
             <div id="next">
                 <h2>Welcome to the game</h2>
                 <p>
@@ -33,18 +29,24 @@
                         How to create your first page in Symfony
                     </a>
 
-{{ dump(grid) }}
+
                     -->
-
-
-
                 </p>
 <pre>
       1 2 3 4 5 6 7 8 9 10
-    {% for rowid, row in grid %}{{ rowid }} {% for squareid, square in row %}{{ square.getStatus() }} {% endfor %}
+    {% for rowid, row in grid %}{{ alphas[rowid] }} {% for squareid, square in row %}{{ square.getStatus() }} {% endfor %}
 
     {% endfor %}
 </pre>
+
+                Ships
+                {{ dump(ships) }}
+
+                Battleship squares
+                {{ dump(battleshipSquares) }}
+
+                Destroyer squares
+                {{ dump(destroyerSquares) }}
             </div>
 
         </div>
