@@ -102,7 +102,7 @@ class DefaultController extends Controller
             $result = ' - Already hit or missed this Square PLEASE TRY OTHER SQUARES -';
         }
 
-        $this->addFlash('notice','Hit result : ' . $result  . ' original : ' . $hitVal );
+        $this->addFlash('notice','Hit result : ' . $result  . ' original : ' . $hitVal . ' Hits count: ' . $grid->getHitsCount());
         return $this->redirectToRoute('homepage');
     }
 }

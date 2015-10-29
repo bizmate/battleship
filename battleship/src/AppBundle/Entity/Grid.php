@@ -12,6 +12,12 @@ use AppBundle\Exceptions\NoShotSquareException;
 use AppBundle\Helper\PositionConverter;
 use Doctrine\Common\Cache\FilesystemCache;
 
+/**
+ * Class Grid
+ * This is the BattleShip game grid
+ *
+ * @package AppBundle\Entity
+ */
 class Grid {
 
     const X = 10;
@@ -33,6 +39,11 @@ class Grid {
      * @var Destroyer
      */
     private $destroyer;
+
+    /**
+     * @var int
+     */
+    private $hitsCount;
 
 
     /**
@@ -57,7 +68,9 @@ class Grid {
             $this->buildGrid();
         }
 
-        $this->setShips();
+        $this->initShips();
+        $this->initCount();
+
     }
 
     /**
@@ -79,7 +92,7 @@ class Grid {
         $this->buildGrid();
 
         $this->cache->delete('ships');
-        $this->setShips();
+        $this->initShips();
     }
 
 
@@ -99,8 +112,21 @@ class Grid {
         return $this->destroyer;
     }
 
+    public function getHitsCount()
+    {
+        return $this->hitsCount;
+    }
+
+    /**
+     * Hit attempt on Grid
+     * @param $gridPos
+     * @return string
+     * @throws NoShotSquareException
+     */
     public function hit($gridPos)
     {
+        $this->increaseHitCount();
+
         $hitPos = $this->positionHelper->gridToPos($gridPos);
 
         $hitSquare = $this->squares[$hitPos];
@@ -150,7 +176,7 @@ class Grid {
     /**
      * Internal function build and set the ships
      */
-    private function setShips()
+    private function initShips()
     {
         if($this->cache->contains('ships') ){
             $ships = $this->cache->fetch('ships');
@@ -174,6 +200,26 @@ class Grid {
             $this->cache->save('ships', array('battleShip'=>$this->battleShip , 'destroyer' => $this->destroyer) );
         }
 
+    }
+
+    /**
+     * init/build counter
+     */
+    private function initCount()
+    {
+        if($this->cache->contains('hitsCount') ){
+            $this->hitsCount = $this->cache->fetch('hitsCount');
+        }
+        else{
+            $this->hitsCount = 0;
+            $this->cache->save('hitsCount', $this->hitsCount);
+        }
+    }
+
+    private function increaseHitCount()
+    {
+        $this->hitsCount++;
+        $this->cache->save('hitsCount', $this->hitsCount);
     }
 
 }
