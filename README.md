@@ -8,6 +8,8 @@ To set it up or run it using php 5.5.9 + Now you can:
     * Change your current directory to battleship/battleship
 
     * Configure your application in app/config/parameters.yml file.
+    
+    * Run 'composer install'.
 
     * Run your application:
         1. Execute the php app/console server:run command.
