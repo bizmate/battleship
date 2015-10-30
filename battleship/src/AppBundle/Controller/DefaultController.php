@@ -19,11 +19,15 @@ class DefaultController extends Controller
     {
         /**
          * Ideally should set the controller as a service and pass the dependencies through
-         * the constructor as arguments but for the purpose of this battle we use the DI containter directly
+         * the constructor as arguments but for the purpose of this battle we use the
+         * DI containter directly from the parent framework controller
+         *
          * @var \AppBundle\Entity\Grid
          */
         $grid = $this->get('grid');
         $ships = $grid->getShips();
+
+
 
         /*
          * Created a form but going to use a raw approach for now
@@ -42,7 +46,9 @@ class DefaultController extends Controller
             'destroyerSquares' => $grid->getDestroyer()->getSquaresOccupied(),
             'alphas' => range('A', 'Z'),
             //'form'=>$form
-            'hitAction' => $this->generateUrl('hit')
+            'hitAction' => $this->generateUrl('hit'),
+            'completed' => $grid->isCompleted(),
+            'hitsCount' => $grid->getHitsCount()
         ));
     }
 
@@ -57,7 +63,7 @@ class DefaultController extends Controller
         $grid = $this->get('grid');
         $grid->reset();
 
-        $this->addFlash('notice','Game reset ' );
+        $this->addFlash('notice','Game reset - New game started ' );
 
         return $this->redirectToRoute('homepage');
     }
@@ -75,6 +81,7 @@ class DefaultController extends Controller
             'grid' => $grid->show(),
             'shipsSquares' => $grid->getShipsSquaresPositions(),
             'alphas' => range('A', 'Z'),
+            'completed' => $grid->isCompleted()
         ));
     }
 
@@ -84,6 +91,7 @@ class DefaultController extends Controller
      */
     public function hitAction(Request $request)
     {
+        $this->alreadyComplete();
         $hitFormat = '/^[A-J][0-9]$/';
         $hitVal =$request->get('hit');
         // raw validation - should sit somewhere else or use FormTypes
@@ -104,5 +112,17 @@ class DefaultController extends Controller
 
         $this->addFlash('notice','Hit result : ' . $result  . ' original : ' . $hitVal . ' Hits count: ' . $grid->getHitsCount());
         return $this->redirectToRoute('homepage');
+    }
+
+    private function alreadyComplete()
+    {
+        $grid = $this->get('grid');
+        if($grid->isCompleted())
+        {
+            $this->addFlash(
+                'notice','Game already completed in ' . $grid->getHitsCount() . ' hits. Please visit reset link'
+            );
+            return $this->redirectToRoute('homepage');
+        }
     }
 }

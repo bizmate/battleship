@@ -5,6 +5,9 @@
             <div id="welcome">
                 <h1>Welcome to Battleship</h1>
             </div>
+
+            {% if completed == true %} <h3 class="flash-notice">Game completed in {{ hitsCount }} hits</h3>{% endif %}
+
             <div> Legend - NO_SHOT = '.', MISS = '_', HIT = 'x'</div>
             <div id="next">
                 {% for flashMessage in app.session.flashbag.get('notice') %}

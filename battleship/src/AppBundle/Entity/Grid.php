@@ -93,6 +93,9 @@ class Grid {
 
         $this->cache->delete('ships');
         $this->initShips();
+
+        $this->cache->delete('hitsCount');
+
     }
 
 
@@ -115,6 +118,21 @@ class Grid {
     public function getHitsCount()
     {
         return $this->hitsCount;
+    }
+
+    /**
+     * Check if game is completed
+     * @return bool
+     */
+    public function isCompleted()
+    {
+        $shipsSquares = $this->getShipsSquaresPositions();
+        foreach($shipsSquares as $shipsSquareInt)
+        {
+            if($this->squares[$shipsSquareInt]->getStatus() != Square::HIT)
+                return false;
+        }
+        return true;
     }
 
     /**
