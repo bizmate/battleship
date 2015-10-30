@@ -15,7 +15,7 @@ To set it up or run it using php 5.5.9 + Now you can:
         1. Execute the php app/console server:run command.
         2. Browse to the http://localhost:8000 URL.
 
-    * index page will show the grid and some debugging info
+    * index page will show the grid 
 
     * resetgrid will modify the grid state and reposition the ship
     
